@@ -32,7 +32,7 @@ select opt in "${options[@]}"
 do
     case $opt in
         "Step 1: Chose target subnet name for ERBS migration")
-            echo "you have the following list of BSC on OSS-RC1:"
+            echo "you have the following list of available eNB regions on OSS-RC:"
             cat ${wdir}/eNM_regions.txt
             echo "Choose one of the mentioned eNB regions - just type it and press Enter"
             read eNB_name
