@@ -118,15 +118,27 @@ do
             
             #Insert neccessary lines (4 from the beginning and 3 from the end of file)
             echo 'eNB_name: ' "$eNB_name"
-            gawk 'NR==5{1;print "<SubNetwork userLabel=\"'$eNB_name'\" networkType=\"SiteSolutions\">"}1' ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //').xml > ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod.xml
+            gawk 'NR==5{1;print "<SubNetwork userLabel=\"'$eNB_name'\" networkType=\"IPRAN\">"}1' ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //').xml > ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod.xml
+            #gawk 'NR==5{1;print "<SubNetwork userLabel=\"'$eNB_name'\" networkType=\"SiteSolutions\">"}1' ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //').xml > ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod.xml
             end_line=$(cat ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod.xml | wc -l)
             count=$(expr $end_line - 1)  #the count of insert line from the end of file
-            echo 'count: ' "$count"
+            #echo 'count: ' "$count"
             gawk 'NR=='$count'{1;print "</SubNetwork>"}1' ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod.xml > ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod2.xml
-            #echo -e "${ENTER_LINE}The ${wdir}/ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod2.xml file has been created with ${MENU}target eNB_name ${eNB_name}"
-            cd ${wdir}/
-            mv ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod2.xml to_create.xml
             echo -e "${ENTER_LINE}The subnetwork tags were added to the ${wdir}/to_create.xml file with target eNB_name ${MENU} ${eNB_name} ${NORMAL}"
+            cd ${wdir}/
+            #mv ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod2.xml to_create.xml
+            
+            echo "${ENTER_LINE}Do you wish to replace ERBS_ in names of all 4G elements to RN_, (y) - replace, (n) - continue without replace?, ${RED_TEXT} press (y/n)? ${NORMAL}"
+            read answer
+                if [ "$answer" != "${answer#[Yy]}" ] ;then
+                   cat ${wdir}/ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod2.xml | sed 's/ERBS_/RN_/' > ${wdir}/to_create.xml
+                   echo "${ENTER_LINE}Your choice is Yes. The ERBS_ in names of all 4G elements were replaced to RN_, ${MENU} see 4G elements below: ${NORMAL}"
+                   cat ${wdir}/to_create.xml | grep '<ManagedElementId string=' | sed 's/<ManagedElementId string=\"//g' | sed 's/\"\/>//g'
+                else
+                    cp -p ${wdir}/ERBS_selected_$(date '+DATE: %d_%m_%Y' | sed 's/DATE: //')_mod2.xml ${wdir}/to_create.xml 
+                    echo "${ENTER_LINE}Your choice is No. The ERBS_ in names of all 4G elements were not replaced to RN_, ${MENU} see 4G elements below: ${NORMAL}"
+                    cat ${wdir}/to_create.xml | grep '<ManagedElementId string=' | sed 's/<ManagedElementId string=\"//g' | sed 's/\"\/>//g'
+            fi
             
             #To make XML for deletion of ERBS sites
             python eric_to_delete_xml_file.py
