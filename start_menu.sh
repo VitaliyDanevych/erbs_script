@@ -18,7 +18,7 @@ show_menu(){
     echo -e "${MENU}**${NUMBER} 2)${MENU} Step 2: Prepare files and make backups ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 3)${MENU} Step 3: Apply ERBS sites deletion in OSS ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 4)${MENU} Step 4: Apply ERBS sites creation into subnet in OSS ${NORMAL}"
-    echo -e "${MENU}**${NUMBER} 5)${MENU} Step 5: Show readme.txt file ${NORMAL}"
+    echo -e "${MENU}**${NUMBER} 5)${MENU} Step 5: Perform adjust before quit ${NORMAL}"
     echo -e "${MENU}**${NUMBER} 6)${MENU} Step 6: Quit ${NORMAL}"
     echo -e "${MENU}*********************************************${NORMAL}"
     echo -e "${ENTER_LINE}Please enter a menu option or press for exit ${RED_TEXT}Ctl+C ${NORMAL}"
@@ -27,7 +27,7 @@ show_menu(){
 
 
 PS3='Please enter your choice: '
-options=("Step 1: Chose target subnet name for ERBS migration" "Step 2: Prepare files and make backups" "Step 3: Apply ERBS sites deletion in OSS" "Step 4: Apply ERBS sites creation into subnet in OSS" "Step 5: Show readme.txt file" "Step 6: Quit")
+options=("Step 1: Chose target subnet name for ERBS migration" "Step 2: Prepare files and make backups" "Step 3: Apply ERBS sites deletion in OSS" "Step 4: Apply ERBS sites creation into subnet in OSS" "Step 5: Perform adjust before quit" "Step 6: Quit")
 select opt in "${options[@]}"
 do
     case $opt in
@@ -228,8 +228,12 @@ do
             echo -e "${ENTER_LINE} Step 4 is finished. Go to the next step!"
             show_menu
             ;;
-        "Step 5: Show readme.txt file")
-            cat readme.txt
+        "Step 5: Perform adjust before quit")
+            echo "Starting gsm_synch adust process after Step 3 and Step 4..."
+            echo "It takes up to 25 mins..."
+            echo -e "${ENTER_LINE}Be sure, that at the end of operation you are able to see:"
+            echo -e "${ENTER_LINE}Adjust Completed. ${NORMAL}"
+            /opt/ericsson/fwSysConf/bin/startAdjust.sh
             echo -e "${ENTER_LINE}Step 5 is finished. Go to the next step! ${NORMAL}"
             show_menu
             ;;
